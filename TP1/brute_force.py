@@ -1,4 +1,4 @@
-import argparse
+import argparse, datetime
 
 def import_data(path):
     args_list = []
@@ -43,6 +43,7 @@ def write_string(string_list):
 
 if __name__ == '__main__':
     # Parse arguments
+    now = datetime.datetime.now()
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", \
                         help="Data file to import", \
@@ -50,3 +51,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     write_string(import_data(args.file))
+    calculated = datetime.datetime.now() - now
+    print('time elapse : ', calculated)
