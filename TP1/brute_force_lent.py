@@ -39,7 +39,7 @@ def compute_skyline(args_list, crit_points):
 
 
 def write_string(string_list):
-    with open('./TP1/data/result.txt', 'w') as file:
+    with open('./data/result.txt', 'w') as file:
         index = 0
         total_string = len(string_list)
         for string in string_list:
@@ -50,14 +50,17 @@ def write_string(string_list):
 
 if __name__ == '__main__':
     # Parse arguments
-    now = datetime.datetime.now()
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", \
                         help="Data file to import", \
                         action='store', required=True, metavar='DATA_FILE')
+    parser.add_argument("-t", "--time", help="time display")
 
     args = parser.parse_args()
     args_list = open_file(args.file)
+    now = datetime.datetime.now()
     write_string(compute_skyline(args_list, create_crit_point(args_list)))
     calculated = datetime.datetime.now() - now
-    print('time elapse : ', calculated)
+    calculated = calculated.total_seconds() * 1000.0
+    if args.time == "True":
+        print(calculated)
