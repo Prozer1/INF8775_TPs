@@ -46,12 +46,11 @@ if __name__ == '__main__':
                         help="Data file to import", \
                         action='store', required=True, metavar='DATA_FILE')
     parser.add_argument("-t", "--time", action='store_true', help="time display")
-    parser.add_argument("-b", "--by", help="sorted by.", choices=['h', 'l', 'p'], default='l')
 
     args = parser.parse_args()
     args_list = open_file(args.file)
     now = datetime.datetime.now()
-    args_list_sorted = quick_sort(args.by, args_list)
+    args_list_sorted = quick_sort(args_list)
     total_height, object_string = compute_highest_tower(args_list_sorted)
     write_string(object_string)
     print(f"{total_height=}")
