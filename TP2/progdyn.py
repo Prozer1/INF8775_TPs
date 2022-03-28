@@ -11,23 +11,48 @@ def open_file(path):
 
 def compute_highest_tower(coords_list):
     total_height = 0
-    prev_l, prev_p = 0,0
     used_objects = []
+    max_list = [] #[[H, Coords, Previous, Id],...]
     for count, coords in enumerate(coords_list):
         current_l, current_p, current_h = coords[1], coords[2], coords[0]
-        if (prev_l > current_l and prev_p > current_p) or (count == 0):
-            total_height += current_h
-            prev_l, prev_p = current_l, current_p
-            used_objects.append(f"{current_h} {current_l} {current_p}\n")
+        if (count != 0):
+            potential_list = []
+            for i in range(0,count):
+                if coords_list[i][1] > current_l and coords_list[i][2] > current_p:
+                    potential_list.append(max_list[i])
+            if len(potential_list) == 0:
+                max_list.append([current_h, coords, -1, count])
+            else:
+                previous_block = max(potential_list, key=take_H)
+                max_list.append([current_h + previous_block[0], coords, previous_block[3], count])
+        else:
+            max_list.append([current_h, coords, -1, 0])
+
+    highest_block = max(max_list, key=take_H) #ID du maximum block
+    tower = []
+    while highest_block[2] != -1:
+        tower.insert(0,highest_block)
+        highest_block = max_list[highest_block[2]]
+    tower.insert(0,highest_block)
+
+    for block in tower:
+        coords = block[1]
+        current_l, current_p, current_h = coords[1], coords[2], coords[0]
+        total_height += current_h
+        used_objects.append(f"{current_h} {current_l} {current_p}\n")
+
     return total_height, used_objects
 
 def take_surface(elem):
     return elem[1]*elem[2]
 
+def take_H(elem):
+    return elem[0]
+
 def quick_sort(list_to_sort):
     list_to_sort.sort(key=take_surface, reverse=True)
     return list_to_sort
-            
+
 
 def write_string(string_list):
     with open('./data/result.txt', 'w') as file:

@@ -67,5 +67,3 @@ if __name__ == '__main__':
     calculated = calculated.total_seconds() * 1000.0
     if args.time:
         print(f"{calculated}ms")
-        
-        
