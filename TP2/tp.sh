@@ -32,5 +32,4 @@ elif [[ $type == "tabou" ]] ; then
 fi
 if [[ $dump == "yes" ]]; then
     echo "$(<./data/result.txt)"
-fi
-$SHELL
+fi 

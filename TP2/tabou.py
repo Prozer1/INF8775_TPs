@@ -142,7 +142,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args_list = open_file(args.file)
     now = datetime.datetime.now()
-    args_list_sorted = quick_sort(args.by, args_list)
+    args_list_sorted = quick_sort_area(args_list)
     total_height, object_string = compute_highest_tower(args_list_sorted)
     write_string(object_string)
     print(f"{total_height=}")

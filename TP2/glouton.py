@@ -27,6 +27,9 @@ def take_second(elem):
 def take_third(elem):
     return elem[2]
 
+def take_surface(elem):
+    return elem[1]*elem[2]
+
 def quick_sort(by, list_to_sort):
     if by == 'h':
         list_to_sort.sort(reverse=True)
@@ -34,6 +37,8 @@ def quick_sort(by, list_to_sort):
         list_to_sort.sort(key=take_second, reverse=True)
     elif by == 'p':
         list_to_sort.sort(key=take_third, reverse=True)
+    elif by == 'lp':
+        list_to_sort.sort(key=take_surface, reverse=True)
     return list_to_sort
             
 
@@ -54,7 +59,7 @@ if __name__ == '__main__':
                         help="Data file to import", \
                         action='store', required=True, metavar='DATA_FILE')
     parser.add_argument("-t", "--time", action='store_true', help="time display")
-    parser.add_argument("-b", "--by", help="sorted by.", choices=['h', 'l', 'p'], default='l')
+    parser.add_argument("-b", "--by", help="sorted by.", choices=['h', 'l', 'p', 'lp'], default='lp')
 
     args = parser.parse_args()
     args_list = open_file(args.file)
