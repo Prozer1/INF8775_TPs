@@ -1,0 +1,69 @@
+import argparse
+import datetime
+from utils import *
+
+def open_file(path):
+    """Open data file, read it and parse data
+
+    Args:
+        path (string): data file path
+
+    Returns:
+        total_atoms : int
+        total_types : int
+        total_lines : int
+        type_list : list of atoms types (size is based on total_types)
+        energy_matrix : list of lists of energy values (size is based on total_types)
+        args_list : list of lists of graph lines (size is based on total_lines)
+    """
+    args_list = []
+    with open(path, 'r') as file:
+        energy_matrix = []
+        for count, line in enumerate(file):
+            splitted_line = line.split()
+            if count == 0:
+                total_atoms, total_types, total_lines = (int(x) for x in splitted_line)
+            elif count == 2:
+                type_list = list(int(x) for x in splitted_line)
+            elif count > 3 and count < total_types + 4:
+                energy_matrix.append(list(int(x) for x in splitted_line))
+            elif count > total_types + 5:
+                args_list.append(line.strip().split(' '))
+            if line == '\n':
+                continue
+
+    return total_atoms, total_types, total_lines, type_list, energy_matrix, args_list
+
+def glouton(energy_matrix, line_list, type_list):
+    sum_list = sum_line(energy_matrix)
+    node_list = get_node_connection(line_list)
+    
+    sol = {}
+    for node in node_list:
+        current_node = node[0]
+        min_index = min(range(len(sum_list)), key=sum_list.__getitem__)
+        type_list[min_index] -= 1
+        if type_list[min_index] < 0:
+            found = False
+            while not(found):
+                sum_list[min_index] = float('inf')
+                min_index = min(range(len(sum_list)), key=sum_list.__getitem__)
+                type_list[min_index] -= 1
+                if type_list[min_index] >= 0:
+                    found = True
+        sol[current_node] = min_index
+    return dict(sorted(sol.items(), key=lambda item:item[0]))
+    
+if __name__ == '__main__':
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--file", \
+                        help="Data file to import", \
+                        action='store', required=True, metavar='DATA_FILE')
+
+    args = parser.parse_args()
+    total_atoms, total_types, total_lines, type_list, energy_matrix, args_list = open_file(args.file)
+    now = datetime.datetime.now()
+    sol = glouton(energy_matrix.copy(), args_list.copy(), type_list.copy())
+    energy = compute_energy(sol, energy_matrix, args_list)
+    print(energy)
