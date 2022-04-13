@@ -5,7 +5,6 @@ def open_file(path):
     args_list = []
     with open(path, 'r') as file:
         index = 0
-        range
         for line in file:
             if index == 0:
                 index += 1
