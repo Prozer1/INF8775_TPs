@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import random
 from utils import *
 
 def open_file(path):
@@ -53,7 +54,38 @@ def glouton(energy_matrix, line_list, type_list):
                     found = True
         sol[current_node] = min_index
     return dict(sorted(sol.items(), key=lambda item:item[0]))
-    
+
+def findBetterSolution(sol, energy_matrix, line_list, param):
+    best_sol = sol.copy()
+    best_sol_energy = compute_energy(best_sol, energy_matrix, line_list)
+    current_sol = sol.copy()
+    displaySol(best_sol,best_sol_energy,param)
+    lines_tested = []
+    lines_to_test = line_list.copy()
+    while True:
+        if not lines_to_test:
+            lines_to_test = line_list.copy()
+            lines_tested = []
+        line_to_switch = random.choice(lines_to_test)
+        lines_to_test.remove(line_to_switch)
+        lines_tested.append(line_to_switch)
+        a, b = current_sol[line_to_switch[0]], current_sol[line_to_switch[1]]
+        current_sol[line_to_switch[0]], current_sol[line_to_switch[1]] = b, a
+        current_sol_energy = compute_energy(current_sol, energy_matrix, line_list)
+        if current_sol_energy < best_sol_energy:
+            best_sol = current_sol.copy()
+            best_sol_energy = current_sol_energy
+            displaySol(best_sol, best_sol_energy, param)
+        else:
+            a, b = current_sol[line_to_switch[0]], current_sol[line_to_switch[1]]
+            current_sol[line_to_switch[0]], current_sol[line_to_switch[1]] = b, a
+
+def displaySol(best_sol, best_sol_energy, param):
+    if param:
+        print(best_sol, flush=True)
+    else:
+        print(best_sol_energy, flush=True)
+
 if __name__ == '__main__':
     # Parse arguments
     parser = argparse.ArgumentParser()
@@ -66,4 +98,4 @@ if __name__ == '__main__':
     now = datetime.datetime.now()
     sol = glouton(energy_matrix.copy(), args_list.copy(), type_list.copy())
     energy = compute_energy(sol, energy_matrix, args_list)
-    print(energy)
+    findBetterSolution(sol, energy_matrix.copy(), args_list.copy(), False)
