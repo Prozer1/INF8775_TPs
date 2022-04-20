@@ -82,7 +82,12 @@ def findBetterSolution(sol, energy_matrix, line_list, param):
 
 def displaySol(best_sol, best_sol_energy, param):
     if param:
-        print(best_sol, flush=True)
+        index = 0
+        string_to_return = ''
+        while index != len(best_sol):
+            string_to_return += str(best_sol[str(index)]) + ' '
+            index += 1
+        print(string_to_return, flush=True)
     else:
         print(best_sol_energy, flush=True)
 
@@ -92,10 +97,16 @@ if __name__ == '__main__':
     parser.add_argument("-f", "--file", \
                         help="Data file to import", \
                         action='store', required=True, metavar='DATA_FILE')
+    parser.add_argument("-p", "--parametre", \
+                        help="Display energy solution", \
+                        action='store', choices=['True', 'False'], default='False')
 
     args = parser.parse_args()
     total_atoms, total_types, total_lines, type_list, energy_matrix, args_list = open_file(args.file)
     now = datetime.datetime.now()
     sol = glouton(energy_matrix.copy(), args_list.copy(), type_list.copy())
     energy = compute_energy(sol, energy_matrix, args_list)
-    findBetterSolution(sol, energy_matrix.copy(), args_list.copy(), False)
+    if args.parametre == 'True':
+        findBetterSolution(sol, energy_matrix.copy(), args_list.copy(), True)
+    else :
+        findBetterSolution(sol, energy_matrix.copy(), args_list.copy(), False)
