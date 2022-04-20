@@ -69,9 +69,14 @@ def findBetterSolution(sol, energy_matrix, line_list, param):
         line_to_switch = random.choice(lines_to_test)
         lines_to_test.remove(line_to_switch)
         lines_tested.append(line_to_switch)
+
+        #We swap the values of neighbouring nodes
         a, b = current_sol[line_to_switch[0]], current_sol[line_to_switch[1]]
         current_sol[line_to_switch[0]], current_sol[line_to_switch[1]] = b, a
+
         current_sol_energy = compute_energy(current_sol, energy_matrix, line_list)
+
+        #We check if our newfound solution has a better energy
         if current_sol_energy < best_sol_energy:
             best_sol = current_sol.copy()
             best_sol_energy = current_sol_energy
